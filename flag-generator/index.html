@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <title>Flags</title>
+</head>
+<body class="bg-purple-100">
+    <div class="flex justify-center w-full h-full  ">
+        <div class="flex flex-col justify-center bg-purple-50 border border-lg w-96 p-16 h-96 m-2 mt-48 text-m text-purple-800 rounded-lg">
+            <input type="text" class="p-2 w-full m-2 border rounded-lg" placeholder="Write a country's name" id="country" autofocus/>
+            <button class="w-full p-2 m-2 border bg-purple-200 rounded-lg" >Get flag</button>
+        </div>
+        <div class="bg-purple-50 border border-lg w-96 p-16 h-96 m-2 mt-48 text-sm text-purple-800 rounded-lg" id="img-article"></div>
+    </div>
+
+    <script>
+        const btn = document.querySelector("button")
+        const imgDiv = document.querySelector("#img-article")
+        btn.addEventListener('click', ()=> {
+            const country = document.querySelector('#country').value.toLowerCase();
+            if (document.querySelector("article")) {
+                document.querySelectorAll("article").forEach((article) => { article.remove() })
+            }
+            getCountryData(country)
+        })
+
+        const getCountryData = async function (country) {
+            const res = await fetch(`https://restcountries.com/v3.1/name/${country}`)
+            const countries = await res.json()
+            
+            const data = countries[0]
+            console.log(data);
+            const html = `
+                <article class="country">
+                    <img class="" src="${data.flags.png}" />
+                    <div class="mt-2">
+                    <p class=""><span>Continent :</span>${data.continents}</p>
+                    <p class=""><span>Name :</span>${data.name.common}</p>
+                    <p class=""><span>Population :</span>${(data.population /10000000)
+                    .toFixed(2)} crore</p>
+                    <p class=""><span>Capital :</span>${data.capital}</p>
+                    </div>
+                    <p class="flex">Coat of Arms :<img class="w-6 m-2" src="${data.coatOfArms.png}" /></p>
+                </article>
+             `;
+  imgDiv.insertAdjacentHTML('beforeend', html);
+ 
+
+        }
+    </script>
+</body>
+</html>
